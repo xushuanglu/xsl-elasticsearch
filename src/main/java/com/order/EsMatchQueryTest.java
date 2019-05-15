@@ -19,6 +19,11 @@ import org.elasticsearch.transport.client.PreBuiltTransportClient;
 import org.junit.Before;
 import org.junit.Test;
 
+/**
+ * 全文查询
+ * @author xushuanglu
+ *
+ */
 public class EsMatchQueryTest {
 	
 	public final static String HOST = "127.0.0.1";
@@ -73,7 +78,6 @@ public class EsMatchQueryTest {
 	
 	@Test
 	public void testMatchAllQuery() {
-
 		SearchResponse searchResponse = client.prepareSearch("film").setTypes("dongzuo")
 				.setQuery(QueryBuilders.matchAllQuery()).get();
 
@@ -90,4 +94,120 @@ public class EsMatchQueryTest {
 	    // 3 关闭连接
 	    client.close();
 	}
+	
+	@Test
+	public void testMatchParaseQuery() {
+		SearchResponse searchResponse = client.prepareSearch("film").setTypes("dongzuo")
+				.setQuery(QueryBuilders.matchPhraseQuery("title", "2")).get();
+		
+		// 2 打印查询结果
+		SearchHits hits = searchResponse.getHits(); // 获取命中次数，查询结果有多少对象
+		System.out.println("查询结果有：" + hits.getTotalHits() + "条");
+		Iterator<SearchHit> iterator = hits.iterator();
+		
+		while (iterator.hasNext()) {
+			SearchHit searchHit = iterator.next(); // 每个查询对象
+			System.out.println(searchHit.getSourceAsString()); // 获取字符串格式打印
+		}
+		
+		// 3 关闭连接
+		client.close();
+	}
+	
+	@Test
+	public void testMatchParasePrefixQuery() {
+		SearchResponse searchResponse = client.prepareSearch("twitter").setTypes("tweet")
+				.setQuery(QueryBuilders.matchPhrasePrefixQuery("message", "study e")).get();
+		
+		// 2 打印查询结果
+		SearchHits hits = searchResponse.getHits(); // 获取命中次数，查询结果有多少对象
+		System.out.println("查询结果有：" + hits.getTotalHits() + "条");
+		Iterator<SearchHit> iterator = hits.iterator();
+		
+		while (iterator.hasNext()) {
+			SearchHit searchHit = iterator.next(); // 每个查询对象
+			System.out.println(searchHit.getSourceAsString()); // 获取字符串格式打印
+		}
+		
+		// 3 关闭连接
+		client.close();
+	}
+	
+	@Test
+	public void testMultiMatchQuery() {
+		SearchResponse searchResponse = client.prepareSearch("twitter").setTypes("tweet")
+				.setQuery(QueryBuilders.multiMatchQuery("study", "message","user")).get();
+		
+		// 2 打印查询结果
+		SearchHits hits = searchResponse.getHits(); // 获取命中次数，查询结果有多少对象
+		System.out.println("查询结果有：" + hits.getTotalHits() + "条");
+		Iterator<SearchHit> iterator = hits.iterator();
+		
+		while (iterator.hasNext()) {
+			SearchHit searchHit = iterator.next(); // 每个查询对象
+			System.out.println(searchHit.getSourceAsString()); // 获取字符串格式打印
+		}
+		
+		// 3 关闭连接
+		client.close();
+	}
+	
+	@Test
+	public void testCommonTermsQuery() {
+		SearchResponse searchResponse = client.prepareSearch("twitter").setTypes("tweet")
+				.setQuery(QueryBuilders.commonTermsQuery("message", "study")).get();
+		
+		// 2 打印查询结果
+		SearchHits hits = searchResponse.getHits(); // 获取命中次数，查询结果有多少对象
+		System.out.println("查询结果有：" + hits.getTotalHits() + "条");
+		Iterator<SearchHit> iterator = hits.iterator();
+		
+		while (iterator.hasNext()) {
+			SearchHit searchHit = iterator.next(); // 每个查询对象
+			System.out.println(searchHit.getSourceAsString()); // 获取字符串格式打印
+		}
+		
+		// 3 关闭连接
+		client.close();
+	}
+	
+	@Test
+	public void testQueryStringQuery() {
+		SearchResponse searchResponse = client.prepareSearch("twitter").setTypes("tweet")
+				.setQuery(QueryBuilders.queryStringQuery("+study -haha")).get();
+		
+		// 2 打印查询结果
+		SearchHits hits = searchResponse.getHits(); // 获取命中次数，查询结果有多少对象
+		System.out.println("查询结果有：" + hits.getTotalHits() + "条");
+		Iterator<SearchHit> iterator = hits.iterator();
+		
+		while (iterator.hasNext()) {
+			SearchHit searchHit = iterator.next(); // 每个查询对象
+			System.out.println(searchHit.getSourceAsString()); // 获取字符串格式打印
+		}
+		
+		// 3 关闭连接
+		client.close();
+	}
+	
+	@Test
+	public void testSimpleQueryStringQuery() {
+		SearchResponse searchResponse = client.prepareSearch("twitter").setTypes("tweet")
+				.setQuery(QueryBuilders.simpleQueryStringQuery("+study -haha")).get();
+		
+		// 2 打印查询结果
+		SearchHits hits = searchResponse.getHits(); // 获取命中次数，查询结果有多少对象
+		System.out.println("查询结果有：" + hits.getTotalHits() + "条");
+		Iterator<SearchHit> iterator = hits.iterator();
+		
+		while (iterator.hasNext()) {
+			SearchHit searchHit = iterator.next(); // 每个查询对象
+			System.out.println(searchHit.getSourceAsString()); // 获取字符串格式打印
+		}
+		
+		// 3 关闭连接
+		client.close();
+	}
+	
+	
 }
